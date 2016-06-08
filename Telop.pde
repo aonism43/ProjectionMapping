@@ -1,68 +1,70 @@
-PImage[] telop=new PImage[TELOP_NUM];//使える時間帯のテロップ画像
-PImage[] NG_telop=new PImage[NG_TELOP_NUM];//使えない時間帯のテロップ画像
-PImage[] use_telop;//流すテロップ
-PImage logo;
+class Telop {
+  private Polygon poly = new Polygon(14);
+  
+  private int PERMIT_IMG_NUM  = 8;//テロップの種類
+  private int PROHIB_IMG_NUM  = 3;//NGテロップの種類
+  private int TELOP_MOVE      = -2400;//テロップの初期位置からのずれ
+  private int TELOP_SPEED     = 5;//テロップの流れる速さ
+  private int[] APEX_INTERVAL = {
+    0, 630, 900, 1200, 1450, 1600
+  };
+  
+  private PImage[] permit_img = new PImage[PERMIT_IMG_NUM];//使える時間帯のテロップ画像
+  private PImage[] prohib_img = new PImage[PROHIB_IMG_NUM];//使えない時間帯のテロップ画像
+  private PImage[] use_telop;//流すテロップ
+  private PImage logo;
 
-boolean[] isDisplay;
+  private boolean[] is_display;
 
-int move=0;
+  private int move=0;
+  private int telop_speed = 1;//テロップが動く間隔｜(frameCount%telopspeed==0)
 
-void setup_Telop() {
-  for (int i=0; i<TELOP_NUM; i++) {
-    telop[i]=loadImage("telop/"+i+".png");
+  void setup_Telop() {
+    for (int i=0; i<PERMIT_IMG_NUM; i++) {
+      permit_img[i] = loadImage("telop/"+i+".png");
+    }
+    for (int i=0; i<PROHIB_IMG_NUM; i++) {
+      prohib_img[i] = loadImage("telop/NGtelop/"+i+".png");
+    }
+
+    logo = loadImage("telop/logo.png");
+
+    is_display = new boolean[PERMIT_IMG_NUM + PROHIB_IMG_NUM];
+    is_display[0] = true;
+    
+    util.loading_txt("GrowUpCharacter", this.poly);
   }
-  for (int i=0; i<NG_TELOP_NUM; i++) {
-    NG_telop[i]=loadImage("telop/NGtelop/"+i+".png");
-  }
 
-  logo=loadImage("telop/logo.png");
+  public void draw() {  
+    for (int i=0; i<use_telop.length; i++) {
+      if (is_display[i]) {
+        beginShape();
+          texture(use_telop[i]);          
+          for(int j=0; j<=6; j++)
+            vertex(poly.get_apex(0).get_X()   , poly.get_apex(0).get_Y()  , move+APEX_INTERVAL[i]  , 0);
+          for(int j=0; j<=6; j++)
+            vertex(poly.get_apex(7+j).get_X() , poly.get_apex(7+j).get_Y(), move+APEX_INTERVAL[6-j], use_telop[i].height);
+        endShape(CLOSE);
 
-  SetTelop();
-}
+        if (move >- TELOP_MOVE) {
+          move = TELOP_MOVE;
+          is_display[i] = false;
 
-void draw_Telop() {  
-  for (int i=0; i<use_telop.length; i++) {
-    if (isDisplay[i]) {
-      beginShape();
-      texture(use_telop[i]);
-      vertex(telop_p1.getX(), telop_p1.getY(), 0+move, 0);
-      vertex(telop_p5.getX(), telop_p5.getY(), 600+move, 0);
-      vertex(telop_p7.getX(), telop_p7.getY(), 630+move, 0);
-      vertex(telop_p9.getX(), telop_p9.getY(), 900+move, 0);
-      vertex(telop_p11.getX(), telop_p11.getY(), 1200+move, 0);
-      vertex(telop_p13.getX(), telop_p13.getY(), 1450+move, 0);
-      vertex(telop_p2.getX(), telop_p2.getY(), 1600+move, 0);
-      vertex(telop_p3.getX(), telop_p3.getY(), 1600+move, telop[i].height);
-      vertex(telop_p14.getX(), telop_p14.getY(), 1450+move, telop[i].height);
-      vertex(telop_p12.getX(), telop_p12.getY(), 1200+move, telop[i].height);
-      vertex(telop_p10.getX(), telop_p10.getY(), 900+move, telop[i].height);
-      vertex(telop_p6.getX(), telop_p6.getY(), 630+move, telop[i].height);
-      vertex(telop_p8.getX(), telop_p8.getY(), 600+move, telop[i].height);
-      vertex(telop_p4.getX(), telop_p4.getY(), 0+move, telop[i].height);
-      endShape(CLOSE);
-
-      if (move>-TELOP_MOVE) {
-        move=TELOP_MOVE;
-        isDisplay[i]=false;
-
-        if (i+1==use_telop.length) isDisplay[0]=true;
-        else isDisplay[i+1]=true;
-      }
-
-      if (frameCount%telopSpeed==0) {
-        if (debugMode) {
-          if (keyPressed) move-=TELOP_SPEED;
-          if (!(mousePressed))move+=TELOP_SPEED;
+          if (i+1 == use_telop.length){
+            is_display[0] = true;
+          } else {
+            is_display[i+1] = true;
+          }
         }
-        move+=TELOP_SPEED;
+
+        if (frameCount % telop_speed == 0) {
+          if (is_debugmode) {
+            if (keyPressed)      move -= TELOP_SPEED;
+            if (!(mousePressed)) move += TELOP_SPEED;
+          }
+          move += TELOP_SPEED;
+        }
       }
     }
   }
-}
-void SetTelop() {
-  if (isUsingPiano) use_telop=telop;
-  else use_telop=NG_telop;
-
-  isDisplay=new boolean[use_telop.length];
-  isDisplay[0]=true;
 }

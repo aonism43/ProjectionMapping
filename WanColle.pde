@@ -1,11 +1,6 @@
 PImage[][] chord_icon=new PImage[12][15];//和音に対応したアイコン //<>//
 PImage empty_img, snowman;
 
-int limit_12(int n) {
-  if (n<12) return n;
-  else return n-12;
-}
-
 int count_true_chord=0;
 
 boolean[][] disp_icon=new boolean[12][15];

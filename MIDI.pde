@@ -1,83 +1,77 @@
-MidiOutput output;
-MidiInput input;
+class MIDI {
+  private MidiOutput output;
+  private MidiInput input;
 
-int ch_s = 0;
-int pit_s = 60;
-int vel_s = 100;
+  private int ch_s = 0;
+  private int pit_s = 60;
+  private int vel_s = 100;
 
-int program_s;
-int device_s;
-int h=0;//押された／離された音
-float pedal=0;//ペダルの踏まれ具合
+  private int program_s;
+  private int device_s;
+  
+  private float pedal = 0;//ペダルの踏まれ具合
 
-void setup_Midi() {
-  device_s = 0;
-  program_s = 0;
+  private String[] scale_name={//ノート番号から音名を取得する配列
+    ""  , ""   , ""   , ""   , ""  , ""  , ""   , ""  , ""   , ""  , 
+    ""  , ""   , ""   , ""   , ""  , ""  , ""   , ""  , ""   , ""  , 
+    ""  , "A0" , "A#0", "B0 ", 
+    "C0", "C#0", "D0" , "D#0", "E0", "F0", "F#0", "G0", "G#0", "A0", "A#0", "B0", 
+    "C1", "C#1", "D1" , "D#1", "E1", "F1", "F#1", "G1", "G#1", "A1", "A#1", "B1", 
+    "C2", "C#2", "D2" , "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", 
+    "C3", "C#3", "D3" , "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", 
+    "C4", "C#4", "D4" , "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", 
+    "C5", "C#5", "D5" , "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5", 
+    "C6", "C#6", "D6" , "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6", "A#6", "B6", 
+    "C7"
+  };
 
-  println("Midi input device list:");
-  println(RWMidi.getInputDeviceNames());
-  input = RWMidi.getInputDevices()[0].createInput(this);
+  MIDI(){
+    device_s = 0;
+    program_s = 0;
 
-  println("Midi output device list:");
-  println(RWMidi.getOutputDeviceNames());
-  output = RWMidi.getOutputDevices()[1].createOutput();
+    println("Midi input device list:");
+    println(RWMidi.getInputDeviceNames());
+    input = RWMidi.getInputDevices()[0].createInput(this);
 
-  println("Input: " + input.getName());
-  println("Output: " + output.getName());
+    println("Midi output device list:");
+    println(RWMidi.getOutputDeviceNames());
+    output = RWMidi.getOutputDevices()[1].createOutput();
 
-  output.sendProgramChange(program_s);  //プログラムチェンジ
-  output.sendPitchBend(ch_s, 8192 );  //ピッチベンド-1度基準を作らないといけない．
-  output.sendNoteOn(ch_s, 60, vel_s);  //ノートオン
-  output.sendPitchBend(ch_s, 0 );   //ピッチベンド
-  output.sendController(ch_s, 11, vel_s );  //エクスプレッション
-  output.sendNoteOff(ch_s, pit_s, vel_s);   //NoteOff
-}
+    println("Input: " + input.getName());
+    println("Output: " + output.getName());
 
-void noteOnReceived(Note note) {
-  h=note.getPitch();
-  println("Note on: " + scaleName[h]+ ", velocity: " + note.getVelocity());
-  if (note.getVelocity()>0) {
-    drawCrystal(h-21);
+    output.sendProgramChange(program_s);    //プログラムチェンジ
+    output.sendPitchBend(ch_s, 8192 );      //ピッチベンド：1度基準を作らないといけない．
+    output.sendNoteOn(ch_s, 60, vel_s);     //ノートオン
+    output.sendPitchBend(ch_s, 0 );         //ピッチベンド
+    output.sendController(ch_s, 11, vel_s );//エクスプレッション
+    output.sendNoteOff(ch_s, pit_s, vel_s); //NoteOff
+  }
 
-    keyingCount++;
-    simult_keying_count++;
-    isKeying[(h-21)%12][(h-21)/12]=true;
+  public String get_scale_name(int n){
+    return this.scale_name[n];
+  }
 
-    if (isSilent) {
-      silent_end_time=month()*1339200+31*day()*111600+hour()*1200+minute()*60+second();
+  public void noteOnReceived(Note note) {
+    int h    = note.getPitch();
+    int velo = note.getVelocity();
+    
+    println("Note on: " + this.scale_name[h]+ ", velocity: " + velo);
+    
+    if (velo > 0) {
+      snow.create_crystal(h-21);
 
-      int silent_time=silent_end_time-silent_start_time;
-
-      if (silent_time>2) {
-
-        try {
-          ArrayList<String> t = new ArrayList<String>();
-          String s=null;
-          BufferedReader r=createReader("MIDIdata/silenttime.txt");
-
-          while ((s=r.readLine())!=null) {
-            t.add(s);
-          }
-
-          t.add(str(silent_time));
-
-          saveStrings("MIDIdata/silenttime.txt", (String[])t.toArray(new String[0]));
-
-          save_state=true;
-          isWriting_start_time=false;
-        }
-        catch(IOException e) {
-        }
-      }
+      simult_keying_count++;
+      isKeying[(h-21)%12][(h-21)/12] = true;
     }
   }
-}
 
-void noteOffReceived(Note note) {
-  println("Note off: " + scaleName[note.getPitch()]);
-}
+  public void noteOffReceived(Note note) {
+    println("Note off: " + scale_name[note.getPitch()]);
+  }
 
-void controllerChangeReceived(Controller controller) {
-  println("CC: " + controller.getCC() + ", value: " + controller.getValue());
-  pedal=controller.getValue();
+  void controllerChangeReceived(Controller controller) {
+    println("CC: " + controller.getCC() + ", value: " + controller.getValue());
+    pedal = controller.getValue();
+  }
 }
