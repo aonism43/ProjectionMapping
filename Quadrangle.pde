@@ -1,9 +1,21 @@
 class Quadrangle extends Polygon{
   private Point[] apex;
+  private float[] side_length;
+  private float[] diff_x; 
+  private float[] diff_y; 
   
   Quadrangle(int n){
     super(n);
     apex = new Point[n];
+    side_length = new float[n];
+    diff_x = new float[n];
+    diff_y = new float[n];
+    
+    for(int i=0; i<n; i++){
+      side_length[i] = util.mydist(apex[i], apex[util.limit_figure(i+1, n)]);
+      diff_x[i] = apex[i].get_X() - apex[util.limit_figure(i+1, n)].get_X();
+      diff_y[i] = apex[i].get_Y() - apex[util.limit_figure(i+1, n)].get_Y();
+    }
   }
   
   public void set_left_top(Point p){

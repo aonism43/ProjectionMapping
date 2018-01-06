@@ -1,4 +1,4 @@
-PImage[][] chord_icon=new PImage[12][15];//和音に対応したアイコン //<>//
+PImage[][] chord_icon=new PImage[12][15];//和音に対応したアイコン //<>// //<>//
 PImage empty_img, snowman;
 
 int count_true_chord=0;
@@ -22,6 +22,10 @@ boolean[] isKeying_note(boolean b[][]) {
   return bb;
 }
 
+int limit_12(int n){
+  return (n <= 12) ? n : 12 - n;
+}
+
 void setup_WanColle() {  
   for (int i=0; i<15; i++) {
     chord_icon[0][i]=loadImage("WanColle/C/"+i+".png");
@@ -31,11 +35,11 @@ void setup_WanColle() {
   empty_img=loadImage("gray.png");
   snowman=loadImage("snowman.png");
 
-  wancolle_p4=telop_p7;
-  wancolle_p3=telop_p9;
-  wancolle_p6=telop_p11;
-  wancolle_p8=telop_p13;
-  wancolle_p10=telop_p2;
+  //wancolle_polygon=telop_p7;
+  //wancolle_p3=telop_p9;
+  //wancolle_p6=telop_p11;
+  //wancolle_p8=telop_p13;
+  //wancolle_p10=telop_p2;
 }
 
 void draw_WanColle() {
@@ -49,34 +53,34 @@ void draw_WanColle() {
 
   beginShape();
   texture(empty_img);
-  vertex(wancolle_p1.getX(), wancolle_p1.getY(), 0, 0);
-  vertex(wancolle_p2.getX(), wancolle_p2.getY(), empty_img.width, 0);
-  vertex(wancolle_p3.getX(), wancolle_p3.getY(), empty_img.width, empty_img.height);
-  vertex(wancolle_p4.getX(), wancolle_p4.getY(), 0, empty_img.height);
+  vertex(wancolle_polygon.get_apex(0).get_X(), wancolle_polygon.get_apex(0).get_Y(), 0, 0);
+  vertex(wancolle_polygon.get_apex(1).get_X(), wancolle_polygon.get_apex(1).get_Y(), empty_img.width, 0);
+  vertex(wancolle_polygon.get_apex(2).get_X(), wancolle_polygon.get_apex(2).get_Y(), empty_img.width, empty_img.height);
+  vertex(wancolle_polygon.get_apex(3).get_X(), wancolle_polygon.get_apex(3).get_Y(), 0, empty_img.height);
   endShape(CLOSE);
 
   beginShape();
   texture(empty_img);
-  vertex(wancolle_p2.getX(), wancolle_p2.getY(), 0, 0);
-  vertex(wancolle_p5.getX(), wancolle_p5.getY(), empty_img.width, 0);
-  vertex(wancolle_p6.getX(), wancolle_p6.getY(), empty_img.width, empty_img.height);
-  vertex(wancolle_p3.getX(), wancolle_p3.getY(), 0, empty_img.height);
+  vertex(wancolle_polygon.get_apex(1).get_X(), wancolle_polygon.get_apex(1).get_Y(), 0, 0);
+  vertex(wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y(), empty_img.width, 0);
+  vertex(wancolle_polygon.get_apex(5).get_X(), wancolle_polygon.get_apex(5).get_Y(), empty_img.width, empty_img.height);
+  vertex(wancolle_polygon.get_apex(2).get_X(), wancolle_polygon.get_apex(2).get_Y(), 0, empty_img.height);
   endShape(CLOSE);
 
   beginShape();
   texture(empty_img);
-  vertex(wancolle_p5.getX(), wancolle_p5.getY(), 0, 0);
-  vertex(wancolle_p7.getX(), wancolle_p7.getY(), empty_img.width, 0);
-  vertex(wancolle_p8.getX(), wancolle_p8.getY(), empty_img.width, empty_img.height);
-  vertex(wancolle_p6.getX(), wancolle_p6.getY(), 0, empty_img.height);
+  vertex(wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y(), 0, 0);
+  vertex(wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y(), empty_img.width, 0);
+  vertex(wancolle_polygon.get_apex(7).get_X(), wancolle_polygon.get_apex(7).get_Y(), empty_img.width, empty_img.height);
+  vertex(wancolle_polygon.get_apex(5).get_X(), wancolle_polygon.get_apex(5).get_Y(), 0, empty_img.height);
   endShape(CLOSE);
 
   beginShape();
   texture(empty_img);
-  vertex(wancolle_p7.getX(), wancolle_p7.getY(), 0, 0);
-  vertex(wancolle_p9.getX(), wancolle_p9.getY(), empty_img.width, 0);
-  vertex(wancolle_p10.getX(), wancolle_p10.getY(), empty_img.width, empty_img.height);
-  vertex(wancolle_p8.getX(), wancolle_p8.getY(), 0, empty_img.height);
+  vertex(wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_X(), 0, 0);
+  vertex(wancolle_polygon.get_apex(8).get_X(), wancolle_polygon.get_apex(8).get_X(), empty_img.width, 0);
+  vertex(wancolle_polygon.get_apex(9).get_X(), wancolle_polygon.get_apex(9).get_X(), empty_img.width, empty_img.height);
+  vertex(wancolle_polygon.get_apex(7).get_X(), wancolle_polygon.get_apex(7).get_X(), 0, empty_img.height);
   endShape(CLOSE);
 
   noStroke();
@@ -94,177 +98,177 @@ void draw_WanColle() {
 }
 
 void drawChordIcon1(int n) {
-  float sS=dist(wancolle_p1.getX(), wancolle_p1.getY(), wancolle_p4.getX(), wancolle_p4.getY())/3;
-  float para=sS/dist(wancolle_p1.getX(), wancolle_p1.getY(), wancolle_p4.getX(), wancolle_p4.getY());
+  float sS=dist(wancolle_polygon.get_apex(0).get_X(), wancolle_polygon.get_apex(0).get_Y(), wancolle_polygon.get_apex(3).get_X(), wancolle_polygon.get_apex(3).get_Y())/3;
+  float para=sS/dist(wancolle_polygon.get_apex(0).get_X(), wancolle_polygon.get_apex(0).get_Y(), wancolle_polygon.get_apex(3).get_X(), wancolle_polygon.get_apex(3).get_Y());
 
-  Point p11111 = new Point(wancolle_p1.getX() + (wancolle_p2.getX() - wancolle_p1.getX()) * n/5, wancolle_p1.getY() + (wancolle_p2.getY() - wancolle_p1.getY()) * n/5);
-  Point p22222 = new Point(p11111.getX() + (wancolle_p2.getX() - wancolle_p1.getX())/5, p11111.getY() + (wancolle_p2.getY() - wancolle_p1.getY())/5);
-  Point p33333 = new Point(wancolle_p4.getX() + (wancolle_p3.getX() - wancolle_p4.getX()) * n/5, wancolle_p4.getY() + (wancolle_p3.getY() - wancolle_p4.getY()) * n/5);
-  Point p44444 = new Point(p33333.getX() + (wancolle_p3.getX() - wancolle_p4.getX())/5, p33333.getY() + (wancolle_p3.getY() - wancolle_p4.getY())/5);
-  Point p55555 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para));
-  Point p66666 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para));
-  Point p77777 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para*2), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para*2));
-  Point p88888 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para*2), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para*2));
+  Point p11111 = new Point(wancolle_polygon.get_apex(0).get_X() + (wancolle_polygon.get_apex(1).get_X() - wancolle_polygon.get_apex(0).get_X()) * n/5, wancolle_polygon.get_apex(0).get_Y() + (wancolle_polygon.get_apex(1).get_Y() - wancolle_polygon.get_apex(0).get_Y()) * n/5);
+  Point p22222 = new Point(p11111.get_X() + (wancolle_polygon.get_apex(1).get_X() - wancolle_polygon.get_apex(0).get_X())/5, p11111.get_Y() + (wancolle_polygon.get_apex(1).get_Y() - wancolle_polygon.get_apex(0).get_Y())/5);
+  Point p33333 = new Point(wancolle_polygon.get_apex(3).get_X() + (wancolle_polygon.get_apex(2).get_X() - wancolle_polygon.get_apex(3).get_X()) * n/5, wancolle_polygon.get_apex(3).get_Y() + (wancolle_polygon.get_apex(2).get_Y() - wancolle_polygon.get_apex(3).get_Y()) * n/5);
+  Point p44444 = new Point(p33333.get_X() + (wancolle_polygon.get_apex(2).get_X() - wancolle_polygon.get_apex(3).get_X())/5, p33333.get_Y() + (wancolle_polygon.get_apex(2).get_Y() - wancolle_polygon.get_apex(3).get_Y())/5);
+  Point p55555 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para));
+  Point p66666 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para));
+  Point p77777 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para*2), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para*2));
+  Point p88888 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para*2), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para*2));
 
   if (disp_icon[0][n]) {
     beginShape();
     texture(chord_icon[0][n]);
-    vertex(p11111.getX(), p11111.getY(), 0, 0);
-    vertex(p22222.getX(), p22222.getY(), chord_icon[0][n].width, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[0][n].width, chord_icon[0][n].height);
-    vertex(p55555.getX(), p55555.getY(), 0, chord_icon[0][n].height);
+    vertex(p11111.get_X(), p11111.get_Y(), 0, 0);
+    vertex(p22222.get_X(), p22222.get_Y(), chord_icon[0][n].width, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[0][n].width, chord_icon[0][n].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, chord_icon[0][n].height);
     endShape();
   }
 
   if (disp_icon[1][n]) {
     beginShape();
     texture(chord_icon[1][n]);
-    vertex(p55555.getX(), p55555.getY(), 0, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[1][n].width, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[1][n].width, chord_icon[1][n].height);
-    vertex(p77777.getX(), p77777.getY(), 0, chord_icon[1][n].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[1][n].width, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[1][n].width, chord_icon[1][n].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, chord_icon[1][n].height);
     endShape();
   }
 
   if (disp_icon[2][n]) {
     beginShape();
     texture(chord_icon[2][n]);
-    vertex(p77777.getX(), p77777.getY(), 0, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[2][n].width, 0);
-    vertex(p44444.getX(), p44444.getY(), chord_icon[2][n].width, chord_icon[2][n].height);
-    vertex(p33333.getX(), p33333.getY(), 0, chord_icon[2][n].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[2][n].width, 0);
+    vertex(p44444.get_X(), p44444.get_Y(), chord_icon[2][n].width, chord_icon[2][n].height);
+    vertex(p33333.get_X(), p33333.get_Y(), 0, chord_icon[2][n].height);
     endShape();
   }
 }
 
 void drawChordIcon2(int n) {
-  float sS=dist(wancolle_p2.getX(), wancolle_p2.getY(), wancolle_p5.getX(), wancolle_p5.getY())/3;
-  float para=sS/dist(wancolle_p2.getX(), wancolle_p2.getY(), wancolle_p5.getX(), wancolle_p5.getY());
+  float sS=dist(wancolle_polygon.get_apex(1).get_X(), wancolle_polygon.get_apex(1).get_Y(), wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y())/3;
+  float para=sS/dist(wancolle_polygon.get_apex(1).get_X(), wancolle_polygon.get_apex(1).get_Y(), wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y());
 
-  Point p11111 = new Point(wancolle_p2.getX() + (wancolle_p5.getX() - wancolle_p2.getX()) * n/5, wancolle_p2.getY() + (wancolle_p5.getY() - wancolle_p2.getY()) * n/5);
-  Point p22222 = new Point(p11111.getX() + (wancolle_p5.getX() - wancolle_p2.getX())/5, p11111.getY() + (wancolle_p5.getY() - wancolle_p2.getY())/5);
-  Point p33333 = new Point(wancolle_p3.getX() + (wancolle_p6.getX() - wancolle_p3.getX()) * n/5, wancolle_p3.getY() + (wancolle_p6.getY() - wancolle_p3.getY()) * n/5);
-  Point p44444 = new Point(p33333.getX() + (wancolle_p6.getX() - wancolle_p3.getX())/5, p33333.getY() + (wancolle_p6.getY() - wancolle_p3.getY())/5);
-  Point p55555 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para));
-  Point p66666 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para));
-  Point p77777 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para*2), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para*2));
-  Point p88888 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para*2), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para*2));
+  Point p11111 = new Point(wancolle_polygon.get_apex(1).get_X() + (wancolle_polygon.get_apex(4).get_X() - wancolle_polygon.get_apex(1).get_X()) * n/5, wancolle_polygon.get_apex(1).get_Y() + (wancolle_polygon.get_apex(4).get_Y() - wancolle_polygon.get_apex(1).get_Y()) * n/5);
+  Point p22222 = new Point(p11111.get_X() + (wancolle_polygon.get_apex(4).get_X() - wancolle_polygon.get_apex(1).get_X())/5, p11111.get_Y() + (wancolle_polygon.get_apex(4).get_Y() - wancolle_polygon.get_apex(1).get_Y())/5);
+  Point p33333 = new Point(wancolle_polygon.get_apex(2).get_X() + (wancolle_polygon.get_apex(5).get_X() - wancolle_polygon.get_apex(2).get_X()) * n/5, wancolle_polygon.get_apex(2).get_Y() + (wancolle_polygon.get_apex(5).get_Y() - wancolle_polygon.get_apex(2).get_Y()) * n/5);
+  Point p44444 = new Point(p33333.get_X() + (wancolle_polygon.get_apex(5).get_X() - wancolle_polygon.get_apex(2).get_X())/5, p33333.get_Y() + (wancolle_polygon.get_apex(5).get_Y() - wancolle_polygon.get_apex(2).get_Y())/5);
+  Point p55555 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para));
+  Point p66666 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para));
+  Point p77777 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para*2), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para*2));
+  Point p88888 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para*2), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para*2));
 
   if (disp_icon[0][n+5]) {
     beginShape();
     texture(chord_icon[0][n+5]);
-    vertex(p11111.getX(), p11111.getY(), 0, 0);
-    vertex(p22222.getX(), p22222.getY(), chord_icon[0][n+4].width, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[0][n+4].width, chord_icon[0][n+4].height);
-    vertex(p55555.getX(), p55555.getY(), 0, chord_icon[0][n+4].height);
+    vertex(p11111.get_X(), p11111.get_Y(), 0, 0);
+    vertex(p22222.get_X(), p22222.get_Y(), chord_icon[0][n+4].width, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[0][n+4].width, chord_icon[0][n+4].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, chord_icon[0][n+4].height);
     endShape();
   }
 
   if (disp_icon[1][n+5]) {
     beginShape();
     texture(chord_icon[1][n+5]);
-    vertex(p55555.getX(), p55555.getY(), 0, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[1][n+5].width, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[1][n+5].width, chord_icon[1][n+5].height);
-    vertex(p77777.getX(), p77777.getY(), 0, chord_icon[1][n+5].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[1][n+5].width, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[1][n+5].width, chord_icon[1][n+5].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, chord_icon[1][n+5].height);
     endShape();
   }
 
   if (disp_icon[2][n+5]) {
     beginShape();
     texture(chord_icon[2][n+5]);
-    vertex(p77777.getX(), p77777.getY(), 0, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[2][n+5].width, 0);
-    vertex(p44444.getX(), p44444.getY(), chord_icon[2][n+5].width, chord_icon[2][n+5].height);
-    vertex(p33333.getX(), p33333.getY(), 0, chord_icon[2][n+5].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[2][n+5].width, 0);
+    vertex(p44444.get_X(), p44444.get_Y(), chord_icon[2][n+5].width, chord_icon[2][n+5].height);
+    vertex(p33333.get_X(), p33333.get_Y(), 0, chord_icon[2][n+5].height);
     endShape();
   }
 }
 
 void drawChordIcon3(int n) {
-  float sS=dist(wancolle_p5.getX(), wancolle_p5.getY(), wancolle_p7.getX(), wancolle_p7.getY())/3;
-  float para=sS/dist(wancolle_p5.getX(), wancolle_p5.getY(), wancolle_p7.getX(), wancolle_p7.getY());
+  float sS=dist(wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y(), wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y())/3;
+  float para=sS/dist(wancolle_polygon.get_apex(4).get_X(), wancolle_polygon.get_apex(4).get_Y(), wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y());
 
-  Point p11111 = new Point(wancolle_p5.getX() + (wancolle_p7.getX() - wancolle_p5.getX()) * n/4, wancolle_p5.getY() + (wancolle_p7.getY() - wancolle_p5.getY()) * n/4);
-  Point p22222 = new Point(p11111.getX() + (wancolle_p7.getX() - wancolle_p5.getX())/4, p11111.getY() + (wancolle_p7.getY() - wancolle_p5.getY())/4);
-  Point p33333 = new Point(wancolle_p6.getX() + (wancolle_p8.getX() - wancolle_p6.getX()) * n/4, wancolle_p6.getY() + (wancolle_p8.getY() - wancolle_p6.getY()) * n/4);
-  Point p44444 = new Point(p33333.getX() + (wancolle_p8.getX() - wancolle_p6.getX())/4, p33333.getY() + (wancolle_p8.getY() - wancolle_p6.getY())/4);
-  Point p55555 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para));
-  Point p66666 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para));
-  Point p77777 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para*2), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para*2));
-  Point p88888 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para*2), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para*2));
+  Point p11111 = new Point(wancolle_polygon.get_apex(4).get_X() + (wancolle_polygon.get_apex(6).get_X() - wancolle_polygon.get_apex(4).get_X()) * n/4, wancolle_polygon.get_apex(4).get_Y() + (wancolle_polygon.get_apex(6).get_Y() - wancolle_polygon.get_apex(4).get_Y()) * n/4);
+  Point p22222 = new Point(p11111.get_X() + (wancolle_polygon.get_apex(6).get_X() - wancolle_polygon.get_apex(4).get_X())/4, p11111.get_Y() + (wancolle_polygon.get_apex(6).get_Y() - wancolle_polygon.get_apex(4).get_Y())/4);
+  Point p33333 = new Point(wancolle_polygon.get_apex(5).get_X() + (wancolle_polygon.get_apex(7).get_X() - wancolle_polygon.get_apex(5).get_X()) * n/4, wancolle_polygon.get_apex(5).get_Y() + (wancolle_polygon.get_apex(7).get_Y() - wancolle_polygon.get_apex(5).get_Y()) * n/4);
+  Point p44444 = new Point(p33333.get_X() + (wancolle_polygon.get_apex(7).get_X() - wancolle_polygon.get_apex(5).get_X())/4, p33333.get_Y() + (wancolle_polygon.get_apex(7).get_X() - wancolle_polygon.get_apex(5).get_Y())/4);
+  Point p55555 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para));
+  Point p66666 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para));
+  Point p77777 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para*2), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para*2));
+  Point p88888 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para*2), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para*2));
 
   if (disp_icon[0][n+10]) {
     beginShape();
     texture(chord_icon[0][n+10]);
-    vertex(p11111.getX(), p11111.getY(), 0, 0);
-    vertex(p22222.getX(), p22222.getY(), chord_icon[0][n+10].width, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[0][n+10].width, chord_icon[0][n+10].height);
-    vertex(p55555.getX(), p55555.getY(), 0, chord_icon[0][n+10].height);
+    vertex(p11111.get_X(), p11111.get_Y(), 0, 0);
+    vertex(p22222.get_X(), p22222.get_Y(), chord_icon[0][n+10].width, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[0][n+10].width, chord_icon[0][n+10].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, chord_icon[0][n+10].height);
     endShape();
   }
 
   if (disp_icon[1][n+10]) {
     beginShape();
     texture(chord_icon[1][n+10]);
-    vertex(p55555.getX(), p55555.getY(), 0, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[1][n+10].width, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[1][n+10].width, chord_icon[1][n+10].height);
-    vertex(p77777.getX(), p77777.getY(), 0, chord_icon[1][n+10].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[1][n+10].width, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[1][n+10].width, chord_icon[1][n+10].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, chord_icon[1][n+10].height);
     endShape();
   }
 
   if (disp_icon[2][n+10]) {
     beginShape();
     texture(chord_icon[2][n+10]);
-    vertex(p77777.getX(), p77777.getY(), 0, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[2][n+10].width, 0);
-    vertex(p44444.getX(), p44444.getY(), chord_icon[2][n+10].width, chord_icon[2][n+10].height);
-    vertex(p33333.getX(), p33333.getY(), 0, chord_icon[2][n+10].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[2][n+10].width, 0);
+    vertex(p44444.get_X(), p44444.get_Y(), chord_icon[2][n+10].width, chord_icon[2][n+10].height);
+    vertex(p33333.get_X(), p33333.get_Y(), 0, chord_icon[2][n+10].height);
     endShape();
   }
 }
 
 void drawChordIcon4(int n) {
-  float sS=dist(wancolle_p7.getX(), wancolle_p7.getY(), wancolle_p9.getX(), wancolle_p9.getY())/3;
-  float para=sS/dist(wancolle_p7.getX(), wancolle_p7.getY(), wancolle_p9.getX(), wancolle_p9.getY());
+  float sS=dist(wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y(), wancolle_polygon.get_apex(8).get_X(), wancolle_polygon.get_apex(8).get_Y())/3;
+  float para=sS/dist(wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y(), wancolle_polygon.get_apex(8).get_X(), wancolle_polygon.get_apex(8).get_Y());
 
-  Point p11111 = new Point(wancolle_p7.getX(), wancolle_p7.getY());
-  Point p22222 = new Point(wancolle_p9.getX(), wancolle_p9.getY());
-  Point p33333 = new Point(wancolle_p8.getX(), wancolle_p8.getY());
-  Point p44444 = new Point(wancolle_p10.getX(), wancolle_p10.getY());
-  Point p55555 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para));
-  Point p66666 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para));
-  Point p77777 = new Point((int)(p11111.getX() + (p33333.getX() - p11111.getX()) * para*2), (int)(p11111.getY() + (p33333.getY() - p11111.getY()) * para*2));
-  Point p88888 = new Point((int)(p22222.getX() + (p44444.getX() - p22222.getX()) * para*2), (int)(p22222.getY() + (p44444.getY() - p22222.getY()) * para*2));
+  Point p11111 = new Point(wancolle_polygon.get_apex(6).get_X(), wancolle_polygon.get_apex(6).get_Y());
+  Point p22222 = new Point(wancolle_polygon.get_apex(8).get_X(), wancolle_polygon.get_apex(8).get_Y());
+  Point p33333 = new Point(wancolle_polygon.get_apex(7).get_X(), wancolle_polygon.get_apex(7).get_Y());
+  Point p44444 = new Point(wancolle_polygon.get_apex(9).get_X(), wancolle_polygon.get_apex(9).get_Y());
+  Point p55555 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para));
+  Point p66666 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para));
+  Point p77777 = new Point((int)(p11111.get_X() + (p33333.get_X() - p11111.get_X()) * para*2), (int)(p11111.get_Y() + (p33333.get_Y() - p11111.get_Y()) * para*2));
+  Point p88888 = new Point((int)(p22222.get_X() + (p44444.get_X() - p22222.get_X()) * para*2), (int)(p22222.get_Y() + (p44444.get_Y() - p22222.get_Y()) * para*2));
 
   if (disp_icon[0][n+14]) {
     beginShape();
     texture(chord_icon[0][n+14]);
-    vertex(p11111.getX(), p11111.getY(), 0, 0);
-    vertex(p22222.getX(), p22222.getY(), chord_icon[0][n+14].width, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[0][n+14].width, chord_icon[0][n+14].height);
-    vertex(p55555.getX(), p55555.getY(), 0, chord_icon[0][n+14].height);
+    vertex(p11111.get_X(), p11111.get_Y(), 0, 0);
+    vertex(p22222.get_X(), p22222.get_Y(), chord_icon[0][n+14].width, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[0][n+14].width, chord_icon[0][n+14].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, chord_icon[0][n+14].height);
     endShape();
   }
 
   if (disp_icon[1][n+14]) {
     beginShape();
     texture(chord_icon[1][n+14]);
-    vertex(p55555.getX(), p55555.getY(), 0, 0);
-    vertex(p66666.getX(), p66666.getY(), chord_icon[1][n+14].width, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[1][n+14].width, chord_icon[1][n+14].height);
-    vertex(p77777.getX(), p77777.getY(), 0, chord_icon[1][n+14].height);
+    vertex(p55555.get_X(), p55555.get_Y(), 0, 0);
+    vertex(p66666.get_X(), p66666.get_Y(), chord_icon[1][n+14].width, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[1][n+14].width, chord_icon[1][n+14].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, chord_icon[1][n+14].height);
     endShape();
   }
 
   if (disp_icon[2][n+14]) {
     beginShape();
     texture(chord_icon[2][n+14]);
-    vertex(p77777.getX(), p77777.getY(), 0, 0);
-    vertex(p88888.getX(), p88888.getY(), chord_icon[2][n+14].width, 0);
-    vertex(p44444.getX(), p44444.getY(), chord_icon[2][n+14].width, chord_icon[2][n+14].height);
-    vertex(p33333.getX(), p33333.getY(), 0, chord_icon[2][n+14].height);
+    vertex(p77777.get_X(), p77777.get_Y(), 0, 0);
+    vertex(p88888.get_X(), p88888.get_Y(), chord_icon[2][n+14].width, 0);
+    vertex(p44444.get_X(), p44444.get_Y(), chord_icon[2][n+14].width, chord_icon[2][n+14].height);
+    vertex(p33333.get_X(), p33333.get_Y(), 0, chord_icon[2][n+14].height);
     endShape();
   }
 }
@@ -305,16 +309,16 @@ void is_display_icon() {
 }
 
 void drawProgressSnowman(int n) {
-  Point p5 = new Point(wancolle_p11.getX() + (wancolle_p12.getX() - wancolle_p11.getX()) * n / 15, wancolle_p11.getY() + (wancolle_p12.getY() - wancolle_p11.getY()) * n / 15);
-  Point p6 = new Point(p5.getX() + (wancolle_p12.getX() - wancolle_p11.getX()) / 15, p5.getY() + (wancolle_p12.getY() - wancolle_p11.getY()) / 15);
-  Point p7 = new Point(wancolle_p14.getX() + (wancolle_p13.getX() - wancolle_p14.getX()) * n / 15, wancolle_p14.getY() + (wancolle_p13.getY() - wancolle_p14.getY()) * n / 15);
-  Point p8 = new Point(p7.getX() + (wancolle_p13.getX() - wancolle_p14.getX()) / 15, p7.getY() + (wancolle_p13.getY() - wancolle_p14.getY()) / 15);
+  Point p5 = new Point(wancolle_polygon.get_apex(10).get_X() + (wancolle_polygon.get_apex(11).get_X() - wancolle_polygon.get_apex(10).get_X()) * n / 15, wancolle_polygon.get_apex(10).get_Y() + (wancolle_polygon.get_apex(11).get_Y() - wancolle_polygon.get_apex(10).get_Y()) * n / 15);
+  Point p6 = new Point(p5.get_X() + (wancolle_polygon.get_apex(11).get_X() - wancolle_polygon.get_apex(10).get_X()) / 15, p5.get_Y() + (wancolle_polygon.get_apex(11).get_Y() - wancolle_polygon.get_apex(10).get_Y()) / 15);
+  Point p7 = new Point(wancolle_polygon.get_apex(13).get_X() + (wancolle_polygon.get_apex(12).get_X() - wancolle_polygon.get_apex(13).get_X()) * n / 15, wancolle_polygon.get_apex(13).get_Y() + (wancolle_polygon.get_apex(12).get_Y() - wancolle_polygon.get_apex(13).get_Y()) * n / 15);
+  Point p8 = new Point(p7.get_X() + (wancolle_polygon.get_apex(12).get_X() - wancolle_polygon.get_apex(13).get_X()) / 15, p7.get_Y() + (wancolle_polygon.get_apex(12).get_Y() - wancolle_polygon.get_apex(13).get_Y()) / 15);
 
   beginShape();
   texture(snowman);
-  vertex(p5.getX(), p5.getY(), 0, 0);
-  vertex(p6.getX(), p6.getY(), snowman.width, 0);
-  vertex(p8.getX(), p8.getY(), snowman.width, snowman.height);
-  vertex(p7.getX(), p7.getY(), 0, snowman.height);
+  vertex(p5.get_X(), p5.get_Y(), 0, 0);
+  vertex(p6.get_X(), p6.get_Y(), snowman.width, 0);
+  vertex(p8.get_X(), p8.get_Y(), snowman.width, snowman.height);
+  vertex(p7.get_X(), p7.get_Y(), 0, snowman.height);
   endShape();
 }

@@ -1,3 +1,4 @@
+/*
 void Translate() {
   int point_selected=point_selected_area+point_selected_v;
 
@@ -29,7 +30,7 @@ void Translate() {
     }
   }
 
-  if (debugMode) {
+  if (is_debugmode) {
     fill(#ff0000);
     for (int i=0; i<all_vertex.length; i++) {
       for (int j=0; j<all_vertex[i].length; j++) {
@@ -38,3 +39,4 @@ void Translate() {
     }
   }
 }
+*/

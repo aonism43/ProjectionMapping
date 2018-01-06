@@ -28,10 +28,11 @@ int point_selected_v = -1;//どの頂点が選択されているか
 boolean save_state = false;//今の頂点の座標は保存してあるか
 
 void setup() {
-  fullScreen(P3D);
-
+  //fullScreen(P3D);
+  size(300, 300);
+  
   setup_WanColle();
-
+exit(); 
   square_param = (SQUARESIDE/util.mydist(snow.get_polygon(0), snow.get_polygon(2)));
 }
 
@@ -63,25 +64,10 @@ void draw() {
   telop.draw();
   draw_WanColle();
 
-  Translate(); //マウスによる頂点操作
+  //Translate(); //マウスによる頂点操作
   //GatheringMIDI();//打鍵情報の収集
 }
 
 void movieEvent(Movie m) {
   m.read();
-}
-
-void keyPressed() {
-  switch(key) {
-  case'a':
-    h=60;
-    drawCrystal(h-21);
-    println(true);
-    break;
-
-  case's':
-    writing_all_txt();
-    save_state=true;
-    break;
-  }
 }
